@@ -1,18 +1,16 @@
 <#
   .SYNOPSIS
-  Remove/Outphase multiple devices
+    Assign a location and purpose to a computer so that it receives the correct policies in Intune.
 
   .DESCRIPTION
-  Remove/Outphase multiple devices. You can choose if you want to wipe the device and/or delete it from Intune an AutoPilot.
+    This script assigns a device to a specific location and purpose by updating its extension attributes in Entra ID. 
+    It requires the device's serial number and optionally the purpose type if the device is categorized as a special device.
+    The script also verifies that the device exists before attempting to update its attributes.
 
   .NOTES
   PERMISSIONS
-   DeviceManagementManagedDevices.PrivilegedOperations.All (Wipe,Retire / seems to allow us to delete from AzureAD)
-   DeviceManagementManagedDevices.ReadWrite.All (Delete Inunte Device)
-   DeviceManagementServiceConfig.ReadWrite.All (Delete Autopilot enrollment)
    Device.Read.All
    Device.ReadWrite.All (Required for extensionAttribute modifications)
-   Directory.ReadWrite.All (Alternative permission for device modifications)
   ROLES
    Cloud device administrator
 
