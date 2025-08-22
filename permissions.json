@@ -1,0 +1,91 @@
+{
+  "Roles": {
+    "cfg-RealmJoin Admin": {
+      "Groups": [
+        "2ea6e8b3-ce6c-4aae-a218-0f3cf83bd64a"
+      ],
+      "AllowedRunbookPatterns": [
+        "*"
+      ]
+    },
+    "Role-WorkloadPlane-Workplace": {
+      "Groups": [
+        "9c38fa32-9992-4345-a8a1-83b301802fbb"
+      ],
+      "AllowedRunbookPatterns":[
+        "org_devices_assign-device",
+        "rjgit-org_general_sync-all-devices",
+        "rjgit-org_security_list-inactive-devices",
+        "rjgit-device_general_outphase-device",
+        "device_general_wipe-device",
+        "rjgit-device_security_isolate-or-release-device",
+        "rjgit-device_security_show-laps-password"
+      ]
+    },
+    "Role-WorkloadPlane-Beschaffung": {
+      "Groups": [
+        "58b313ff-26ac-4caa-a043-41b636a15d21"
+      ],
+      "AllowedRunbookPatterns": [
+        "org_devices_assign-device",
+        "rjgit-user_general_assign-or-unassign-license",
+        "rjgit-org_general_office365-license-report"
+      ]
+    },
+    "Role-WorkloadPlane-Helpdesk": {
+      "Groups": [
+        "ea9201af-af01-4de0-978a-c97b39714fa0"
+      ],
+      "AllowedRunbookPatterns": [
+        "org_devices_assign-device",
+        "user_mail_set-out-of-office",
+        "rjgit-user_security_create-temporary-access-pass",
+        "rjgit-user_security_reset-mfa",
+        "rjgit-user_security_reset-password",
+        "rjgit-user_security_revoke-or-restore-access",
+        "device_general_wipe-device",
+        "user_general_list-microsoft365Groups-owner",
+        "rjgit-device_general_outphase-device",
+        "rjgit-user_mail_list-mailbox-permissions",
+        "rjgit-device_security_isolate-or-release-device",
+        "rjgit-device_security_reset-mobile-device-pin",
+        "rjgit-device_security_show-laps-password"
+      ]
+    },
+    "Role-WorkloadPlane-CCM": {
+      "Groups": [
+        "d79db9d9-b9c1-471d-baec-6f3fbf5e8ac0"
+      ],
+      "AllowedRunbookPatterns": [
+        "org_general_add-atlassian-group"
+      ]
+    },
+    "Role-WorkloadPlane-UC Reader": {
+      "Groups": [
+        "7a6ca98b-c912-48a9-899a-992d532daf3e"
+      ],
+      "AllowedRunbookPatterns": [
+        "org_general_add-android-desk-phone-user",
+        "org_phone_add-resource-account",
+        "rjgit-org_general_add-device-via-corporate-identifier",
+        "rjgit-device_general_outphase-device"        
+      ]
+    },
+    "Role-WorkloadPlane-IT-Team-WAR": {
+      "Groups": [
+        "cd99dcb0-deca-4a08-9464-5146e5df5ae7"
+      ],
+      "AllowedRunbookPatterns": [
+        "user_mail_set-out-of-office",
+        "rjgit-user_security_reset-mfa",
+        "rjgit-user_security_reset-password",
+        "rjgit-user_security_revoke-or-restore-access",
+        "device_general_wipe-device",
+        "rjgit-device_security_reset-mobile-device-pin",
+        "rjgit-device_general_outphase-device",
+        "rjgit-user_mail_list-mailbox-permissions",
+        "user_general_list-microsoft365Groups-owner"
+      ]
+    }
+  }
+}
