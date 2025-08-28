@@ -115,4 +115,4 @@ foreach ($Method in $Methods)
 	}
     
 }
-$result
+$result | sort-object -property AuthenticationMethodId | format-table | out-string

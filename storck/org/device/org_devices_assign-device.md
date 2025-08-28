@@ -9,7 +9,7 @@ Ensures devices receive the correct policies in Intune by setting location and p
 Run the script with the following parameters:
 
 - `purpose`: Purpose of the device (e.g., OfficeDevice, SpecialDevice)
-- `location`: Device location (e.g., Berlin, Frankfurt)
+- `location`: Device location (e.g., Berlin, Chicago)
 - `device`: Device serial number
 - `purposeType`: (Optional) Purpose type if device is a special device
 - `CallerName`: Name of the caller (for auditing)
