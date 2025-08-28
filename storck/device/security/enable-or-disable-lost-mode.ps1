@@ -64,8 +64,8 @@ if ($targetDevice.operatingSystem -notin "IPad","IPhone") {
 
 
 $body = @{
-    "message" = "Message value"
-    "phoneNumber" = "Phone Number value"
+    "message" = "Bitte geben Sie das Gerät bei der Polizei oder im Fundbüro ab. August Storck KG, Paulinenweg 12, 33790 Halle (Westf.), Germany"
+    "phoneNumber" = "+495201128558"
     "footer" = "Footer value"
 }
 
