@@ -1,42 +1,76 @@
 <#
 .SYNOPSIS
-Enable oder disable the lost mode.
+Enable oder disable the lost mode (only Iphone/IPad).
 
 .DESCRIPTION
-Enable oder disable the lost mode.
+Enable oder disable the lost mode (only Iphone/IPad).
 
-  .INPUTS
-  RunbookCustomization: {
+.INPUTS
+RunbookCustomization: {
         "Parameters": {
-            "Enable": {
-                "DisplayName": "Disable or enable lost mode",
-                "SelectSimple": {
-                    "Disable lost mode": false,
-                    "Enable lost mode": true
-                }
             },
             "DeviceId": {
                 "Hide": true
             },
             "CallerName": {
                 "Hide": true
-            },
-            "Enable": {
-                "DisplayName": "Disable or Enable Device"
             }
         }
     }
 #>
+#region RunbookCustomization wenn lostmodestate funktioniert
 
-#Requires -Modules @{ModuleName = "RealmJoin.RunbookHelper"; ModuleVersion = "0.8.4" }
+<#
+RunbookCustomization: {
+    "Parameters": {
+        "Enable": {
+                "DisplayName": "Disable or enable lost mode",
+                "SelectSimple": {
+                    "Disable lost mode": false,
+                    "Enable lost mode": true
+                    }
+            },
+            "DeviceId": {
+                "Hide": true
+                },
+            "CallerName": {
+                "Hide": true
+                },
+                "Enable": {
+                    "DisplayName": "Disable or Enable Device"
+            }
+        }
+    }
+}
+
+#Requires -Modules @{ModuleName = "RealmJoin.RunbookHelper"; ModuleVersion = "0.8.3" }
 
 param(
     [Parameter(Mandatory = $true)]
     [string] $DeviceId,
-    [bool] $Enable = $false,
+    [bool] $Enable = $true,
     # CallerName is tracked purely for auditing purposes
     [Parameter(Mandatory = $true)]
     [string] $CallerName
+)
+#>
+#endregion
+                    
+
+#Requires -Modules @{ModuleName = "RealmJoin.RunbookHelper"; ModuleVersion = "0.8.3" }
+
+param(
+    [Parameter(Mandatory = $true)]
+    [string] $DeviceId,
+    # CallerName is tracked purely for auditing purposes
+    [Parameter(Mandatory = $true)]
+    [string] $CallerName,
+    [ValidateScript( { Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; Use-RJInterface -Type Textarea } )]
+    [string] $Message = "Bitte geben Sie das Gerät bei der Polizei oder im Fundbüro ab.",
+    [ValidateScript( { Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; Use-RJInterface -Type Textarea } )]
+    [string] $PhoneNumber = "+495201128558",
+    [ValidateScript( { Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; Use-RJInterface -Type Textarea } )]
+    [string] $Footer = "August Storck KG, Paulinenweg 12, 33790 Halle (Westf.), Germany"
 )
 
 Write-RjRbLog -Message "Caller: '$CallerName'" -Verbose
@@ -46,13 +80,17 @@ Write-RjRbLog -Message "Version: $Version" -Verbose
 
 Connect-RjRbGraph
 
-# "Searching DeviceId $DeviceID."
-$targetDevice = Invoke-RjRbRestMethodGraph -Resource "/devices" -OdFilter "deviceId eq '$DeviceId'" -ErrorAction SilentlyContinue
-if (-not $targetDevice) {
-    throw ("DeviceId $DeviceId not found.")
+$targetDevice = Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices" -OdFilter "azureADDeviceId eq '$DeviceId'" -Beta
+## Checking device has been found
+if ($null -eq $targetDevice) {
+    ## Highly unlikely
+    throw "## Device not found. "
 }
+"## DeviceId: $($targetDevice.id)"
+"## LostMode: $($targetDevice.lostModeState)"
+"## OS: $($targetDevice.operatingSystem)"
 
-if ($targetDevice.operatingSystem -notin "IPad","IPhone") {
+if ($targetDevice.operatingSystem -ne "iOS") {
     "## Can not en-/disable lost mode for non-iOS devices currently."
     throw ("OS not supported")
 }
@@ -62,13 +100,22 @@ if ($targetDevice.operatingSystem -notin "IPad","IPhone") {
 # POST /deviceManagement/managedDevices/{managedDeviceId}/disableLostMode
 ####
 
-
 $body = @{
-    "message" = "Bitte geben Sie das Gerät bei der Polizei oder im Fundbüro ab. August Storck KG, Paulinenweg 12, 33790 Halle (Westf.), Germany"
-    "phoneNumber" = "+495201128558"
-    "footer" = "Footer value"
+    "message" = $Message #"Bitte geben Sie das Gerät bei der Polizei oder im Fundbüro ab. August Storck KG, Paulinenweg 12, 33790 Halle (Westf.), Germany"
+    "phoneNumber" = $PhoneNumber #"+495201128558"
+    "footer" = $Footer #"Footer value"
 }
+"## Enabling lost mode for device $($targetDevice.displayName) with DeviceId $DeviceId."
+        try {
+            Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/enableLostMode" -Method "Post" -Beta -body $body| Out-Null
+        }
+        catch {
+            write-error $_
+            throw "Enabling lost mode of device $($targetDevice.displayName) failed"
+        }
 
+#region RunbookCustomization wenn lostmodestate funktioniert
+<#
 if ($targetDevice.lostModeState -eq "Enabled") {
     if ($Enable) {
         "## Device $($targetDevice.displayName) with DeviceId $DeviceId is already in lost mode."
@@ -76,7 +123,7 @@ if ($targetDevice.lostModeState -eq "Enabled") {
     else {
         "## Disabling lost mode for device $($targetDevice.displayName) with DeviceId $DeviceId."
         try {
-            Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/disableLostMode" -Method "Post" -Beta | Out-Null
+            Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/disableLostMode" -Method "Post" | Out-Null
         }
         catch {
             write-error $_
@@ -88,7 +135,7 @@ else {
     if ($Enable) {
         "## Enabling lost mode for device $($targetDevice.displayName) with DeviceId $DeviceId."
         try {
-            Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/enableLostMode" -Method "Post" -body $body| Out-Null
+            Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/enableLostMode" -Method "Post" -Beta -body $body| Out-Null
         }
         catch {
             write-error $_
@@ -99,3 +146,5 @@ else {
         "## Device $($targetDevice.displayName) with DeviceId $DeviceId is already in lost mode."
     }
 }
+#>
+#endregion
