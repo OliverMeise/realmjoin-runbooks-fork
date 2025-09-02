@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Enable oder disable the lost mode (only Iphone/IPad).
+Enable the lost mode. PLEASE NOTE: Only activation is currently possible. For deactivation, please contact Frederik or Luca.
 
 .DESCRIPTION
-Enable oder disable the lost mode (only Iphone/IPad).
+Enable oder disable the lost mode (only iOS/iPadOS).
 
 .INPUTS
 RunbookCustomization: {

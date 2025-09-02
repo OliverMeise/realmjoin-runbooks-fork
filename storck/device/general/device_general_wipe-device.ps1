@@ -1,21 +1,21 @@
 <#
-  .SYNOPSIS
-  Wipe a Windows or MacOS device
+.SYNOPSIS
+Wipe a Windows or MacOS device
 
-  .DESCRIPTION
-  Wipe a Windows or MacOS device. 
+.DESCRIPTION
+Wipe a Windows or MacOS device. 
 
-  .NOTES
-  PERMISSIONS
-   DeviceManagementManagedDevices.PrivilegedOperations.All (Wipe,Retire / seems to allow us to delete from AzureAD)
-   DeviceManagementManagedDevices.ReadWrite.All (Delete Inunte Device)
-   DeviceManagementServiceConfig.ReadWrite.All (Delete Autopilot enrollment)
-   Device.Read.All
-  ROLES
-   Cloud device administrator
+.NOTES
+PERMISSIONS
+DeviceManagementManagedDevices.PrivilegedOperations.All (Wipe,Retire / seems to allow us to delete from AzureAD)
+DeviceManagementManagedDevices.ReadWrite.All (Delete Inunte Device)
+DeviceManagementServiceConfig.ReadWrite.All (Delete Autopilot enrollment)
+Device.Read.All
+ROLES
+Cloud device administrator
 
-  .INPUTS
-  RunbookCustomization: {
+.INPUTS
+RunbookCustomization: {
     "Parameters": {
         "DeviceId": {
             "Hide": true
