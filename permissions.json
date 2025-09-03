@@ -5,7 +5,7 @@
         "2ea6e8b3-ce6c-4aae-a218-0f3cf83bd64a"
       ],
       "AllowedRunbookPatterns": [
-        
+        "*"
       ]
     },
     "Role-AADTenantAdministration": {
@@ -14,21 +14,24 @@
       ],
       "AllowedRunbookPatterns": [
         "org_devices_assign-device",
-        "rjgit-org_general_sync-all-devices",
-        "rjgit-device_general_outphase-device",
-        "device_general_wipe-device",
-        "rjgit-device_security_isolate-or-release-device",
-        "rjgit-user_general_assign-or-unassign-license",
-        "rjgit-org_general_office365-license-report",
+        "rjgit-org_devices_get-bitlocker-recovery-key",
+        "user_general_list-microsoft365Groups-owner",
+        "rjgit-user_mail_list-mailbox-permissions",
         "user_mail_set-out-of-office",
+        "user_security_get-authentication-methods",
         "rjgit-user_security_create-temporary-access-pass",
         "rjgit-user_security_reset-mfa",
         "rjgit-user_security_reset-password",
         "rjgit-user_security_revoke-or-restore-access",
-        "user_general_list-microsoft365Groups-owner",
-        "rjgit-user_mail_list-mailbox-permissions",
-        "rjgit-device_security_reset-mobile-device-pin",
-        "rjgit-device_security_show-laps-password"
+        "device_apple-device_delete-device",
+        "device_apple-device_enable-or-disable-lost-mode",
+        "device_apple-device_reset-mobile-device-code",
+        "device_apple-device_retire-device",
+        "device_apple-device_wipe-device",
+        "rjgit-device_general_outphase-device",
+        "rjgit-device_general_wipe-device",
+        "rjgit-device_security_isolate-or-release-device",
+        "rjgit-device_security_show-laps-password"        
       ]
     },
     "Role-WorkloadPlane-Workplace": {
@@ -42,7 +45,9 @@
         "rjgit-device_general_outphase-device",
         "device_general_wipe-device",
         "rjgit-device_security_isolate-or-release-device",
-        "rjgit-device_security_show-laps-password"
+        "rjgit-device_security_show-laps-password",
+        "rjgit-org_devices_get-bitlocker-recovery-key",
+        "user_security_get-authentication-methods"
       ]
     },
     "Role-WorkloadPlane-Beschaffung": {
@@ -61,17 +66,23 @@
       ],
       "AllowedRunbookPatterns": [
         "org_devices_assign-device",
+        "rjgit-org_devices_get-bitlocker-recovery-key",
+        "user_general_list-microsoft365Groups-owner",
+        "rjgit-user_mail_list-mailbox-permissions",
         "user_mail_set-out-of-office",
+        "user_security_get-authentication-methods",
         "rjgit-user_security_create-temporary-access-pass",
         "rjgit-user_security_reset-mfa",
         "rjgit-user_security_reset-password",
         "rjgit-user_security_revoke-or-restore-access",
-        "device_general_wipe-device",
-        "user_general_list-microsoft365Groups-owner",
+        "device_apple-device_delete-device",
+        "device_apple-device_enable-or-disable-lost-mode",
+        "device_apple-device_reset-mobile-device-code",
+        "device_apple-device_retire-device",
+        "device_apple-device_wipe-device",
         "rjgit-device_general_outphase-device",
-        "rjgit-user_mail_list-mailbox-permissions",
+        "rjgit-device_general_wipe-device",
         "rjgit-device_security_isolate-or-release-device",
-        "rjgit-device_security_reset-mobile-device-pin",
         "rjgit-device_security_show-laps-password"
       ]
     },
@@ -99,15 +110,11 @@
         "cd99dcb0-deca-4a08-9464-5146e5df5ae7"
       ],
       "AllowedRunbookPatterns": [
-        "user_mail_set-out-of-office",
-        "rjgit-user_security_reset-mfa",
-        "rjgit-user_security_reset-password",
-        "rjgit-user_security_revoke-or-restore-access",
-        "device_general_wipe-device",
-        "rjgit-device_security_reset-mobile-device-pin",
-        "rjgit-device_general_outphase-device",
-        "rjgit-user_mail_list-mailbox-permissions",
-        "user_general_list-microsoft365Groups-owner"
+        "device_apple-device_delete-device",
+        "device_apple-device_enable-or-disable-lost-mode",
+        "device_apple-device_reset-mobile-device-code",
+        "device_apple-device_retire-device",
+        "device_apple-device_wipe-device"
       ]
     }
   }
