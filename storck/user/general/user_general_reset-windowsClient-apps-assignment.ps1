@@ -42,11 +42,11 @@ Write-RjRbLog -Message "Version: $Version" -Verbose
 
 '## Start script'
 Connect-RjRbGraph
-'## Checking if user exists'
-$Select = 'id,onPremisesDistinguishedName'
+'## Request user'
+$Select = 'id,displayName,onPremisesDistinguishedName'
 $User = Invoke-RjRbRestMethodGraph -Resource "/users/$username" -OdSelect $Select -ErrorAction SilentlyContinue
 if ($null -eq $User) {
-    throw ('User "{0}" not found.' -f $username)
+    throw ('## User "{0}" not found.' -f $username)
 }
 
 $User.onPremisesDistinguishedName
@@ -60,7 +60,7 @@ switch ($Location) {
     ANT {'8db61570-2490-4cb0-b7e4-b54b73bf792c'}
     BAR {'590fe086-0111-4344-ba74-0bf266b6c237'}
     BAS {'4814549e-fa7c-4d21-a8c5-40d4a0bbf164'}
-    #BER {'6a993402-a286-405a-9e1c-5990282957dd'}
+    BER {'6a993402-a286-405a-9e1c-5990282957dd'}
     BRA {'6b31cbab-0c9d-4899-ab60-09d680ce33c9'}
     BRO {'97d31776-54f2-4a9c-b656-bb8d4d7d4ece'}
     BUD {'7d0b0595-3696-4c69-b91e-39da8b52e79b'}
@@ -81,7 +81,7 @@ switch ($Location) {
     SAN {'3274ccaf-931b-44ef-8e30-b72157ca5a5e'}
     SDO {'57ab4d4e-d060-4381-bedb-5cee92a07724'}
     SIN {'230f0135-c4b2-4e93-a5eb-e4ebd6e1106b'}
-    #TAU {'a0beb5e0-d797-4e23-be62-45dcacfa60eb'}
+    TAU {'a0beb5e0-d797-4e23-be62-45dcacfa60eb'}
     WAR {'bfe0ca29-ad89-4f40-a9f4-b9fdef693253'}
     ZAG {'42b43b34-f5f2-447c-9a12-e4483999b0bc'}
     ZUR {'5204f1e0-06cf-46c4-9392-105df980760d'}
@@ -100,7 +100,6 @@ foreach ($item in $StandardGroups) {
     $HashStandardGroups.add($item.id,$item.displayName)
 }
 
-
 #$filter = 'startswith(displayName, ''WindowsClient-App'')'
 $Groups = Invoke-RjRbRestMethodGraph -Resource "/users/$UserName/memberof" -FollowPaging | Where-Object {$_.displayname -like 'WindowsClient-App *'}
 if ($null -eq $Groups) {
@@ -113,19 +112,45 @@ foreach ($item in $Groups) {
 
 $body = @{"@odata.id" = ('https://graph.microsoft.com/v1.0/directoryObjects/{0}' -f $User.id)}
 
+$skipped = @()
+$removed = 
 foreach ($item in $HashGroups.GetEnumerator()) {
     If (!$HashStandardGroups[$item.Key]) {
         $Resource = ('/groups/{0}/members/{1}/$ref' -f $item.Key,$User.id)
         Invoke-RjRbRestMethodGraph -Resource $Resource -Method Delete -Body $body | Out-Null
         ('## {0} is removed from {1}' -f $UserName,$item.Value)
-    } else {('## skip: {0}' -f $item.Value)
+        [PSCustomObject]@{
+            Name = $item.Value
+            Action = 'Removed'
+            User = $UserName
+        }
+    } else {
+        $skipped +=
+        [PSCustomObject]@{
+            Name = $item.Value
+            Action = 'Skipped'
+            User = $UserName
+        }
+    }
 }
-}
-
+'## Removed Groups:'
+$removed | Format-Table -AutoSize | Out-String
+''
+$added =
 foreach ($item in $HashStandardGroups.GetEnumerator()) {
     If (!$HashGroups[$item.Key]) {
         $Resource = ('/groups/{0}/members/$ref' -f $item.Key)
         Invoke-RjRbRestMethodGraph -Resource $Resource -Method Post -Body $body | Out-Null
-        ('## user is added to {0}' -f $item.Value)      
+        ('## user is added to {0}' -f $item.Value)  
+        [PSCustomObject]@{
+            Name = $item.Value
+            Action = 'Added'
+            User = $UserName
+        }
     }
 }
+'## Added Groups:'
+$added | Format-Table -AutoSize | Out-String
+''
+'## Skipped Groups:'
+$skipped | Format-Table -AutoSize | Out-String
