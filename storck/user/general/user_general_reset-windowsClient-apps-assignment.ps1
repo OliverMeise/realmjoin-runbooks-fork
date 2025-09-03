@@ -118,7 +118,6 @@ foreach ($item in $HashGroups.GetEnumerator()) {
     If (!$HashStandardGroups[$item.Key]) {
         $Resource = ('/groups/{0}/members/{1}/$ref' -f $item.Key,$User.id)
         Invoke-RjRbRestMethodGraph -Resource $Resource -Method Delete -Body $body | Out-Null
-        ('## {0} is removed from {1}' -f $UserName,$item.Value)
         [PSCustomObject]@{
             Name = $item.Value
             Action = 'Removed'
@@ -141,7 +140,6 @@ foreach ($item in $HashStandardGroups.GetEnumerator()) {
     If (!$HashGroups[$item.Key]) {
         $Resource = ('/groups/{0}/members/$ref' -f $item.Key)
         Invoke-RjRbRestMethodGraph -Resource $Resource -Method Post -Body $body | Out-Null
-        ('## user is added to {0}' -f $item.Value)  
         [PSCustomObject]@{
             Name = $item.Value
             Action = 'Added'
