@@ -35,24 +35,30 @@ Write-RjRbLog -Message "Version: $Version" -Verbose
 
 Connect-RjRbGraph
 
-$targetDevice = Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices" -OdFilter "azureADDeviceId eq '$DeviceId'" -Beta
 ## Checking device has been found
-if ($null -eq $targetDevice) {
+$targetManagedDevice = Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices" -OdFilter "azureADDeviceId eq '$DeviceId'" -Beta
+if ($null -eq $targetManagedDevice) {
     throw "## Device not found. "
 }
-"## DeviceId: $($targetDevice.id)"
-"## OS: $($targetDevice.operatingSystem)"
+"## DeviceId: $($targetManagedDevice.id)"
+"## OS: $($targetManagedDevice.operatingSystem)"
+
+# "Searching DeviceId $DeviceID."
+$targetDevice = Invoke-RjRbRestMethodGraph -Resource "/devices" -OdFilter "deviceId eq '$DeviceId'" -ErrorAction SilentlyContinue
+if (-not $targetDevice) {
+    throw ("DeviceId $DeviceId not found in Entra ID.")
+}
 
 try {
-    Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/retire" -Method "Post" -Beta | Out-Null
-    Write-Output "## Retiring device $($targetDevice.displayName) with DeviceId $DeviceId."
-    Invoke-RjRbRestMethodGraph -Resource "/devices/$($DeviceId)" -Method Delete | Out-Null
-    Write-Output "## Deleting $($targetDevice.deviceName) (Object ID $($targetDevice.id)) from Entra ID"
+    Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetManagedDevice.id)/retire" -Method "Post" -Beta | Out-Null
+    Write-Output "## Retiring device $($targetManagedDevice.displayName) with DeviceId $DeviceId."
+    Invoke-RjRbRestMethodGraph -Resource "/devices/$($targetDevice.id)" -Method Delete | Out-Null
+    Write-Output "## Deleting $($targetManagedDevice.deviceName) (Object ID $($targetDevice.id)) from Entra ID"
 }
 catch {
     write-error $_
     "## Error Message: $($_.Exception.Message)"
     "## Please see 'All logs' for more details."
     "## Execution stopped."
-    throw "Retiring device $($targetDevice.displayName) failed"
+    throw "Retiring device $($targetManagedDevice.displayName) failed"
 }
