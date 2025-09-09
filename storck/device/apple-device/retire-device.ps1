@@ -44,10 +44,10 @@ if ($null -eq $targetDevice) {
 "## OS: $($targetDevice.operatingSystem)"
 
 try {
-    Write-Output "## Retiring device $($targetDevice.displayName) with DeviceId $DeviceId."
     Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetDevice.id)/retire" -Method "Post" -Beta | Out-Null
-    Write-Output "## Deleting $($targetDevice.deviceName) (Object ID $($targetDevice.id)) from Entra ID"
+    Write-Output "## Retiring device $($targetDevice.displayName) with DeviceId $DeviceId."
     Invoke-RjRbRestMethodGraph -Resource "/devices/$($DeviceId)" -Method Delete | Out-Null
+    Write-Output "## Deleting $($targetDevice.deviceName) (Object ID $($targetDevice.id)) from Entra ID"
 }
 catch {
     write-error $_
