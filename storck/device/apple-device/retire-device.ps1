@@ -50,8 +50,10 @@ if (-not $targetDevice) {
 }
 
 try {
+    # Retire device in Intune
     Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetManagedDevice.id)/retire" -Method "Post" -Beta | Out-Null
     Write-Output "## Retiring device $($targetManagedDevice.displayName) with DeviceId $DeviceId."
+    # Delete device in Entra ID
     Invoke-RjRbRestMethodGraph -Resource "/devices/$($targetDevice.id)" -Method Delete | Out-Null
     Write-Output "## Deleting $($targetManagedDevice.deviceName) (Object ID $($targetDevice.id)) from Entra ID"
 }
