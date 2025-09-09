@@ -49,6 +49,8 @@ if (-not $targetDevice) {
     throw ("DeviceId $DeviceId not found in Entra ID.")
 }
 
+"## Entra ID ObjectId: $($targetDevice.id)"
+
 try {
     # Retire device in Intune
     Invoke-RjRbRestMethodGraph -Resource "/deviceManagement/managedDevices/$($targetManagedDevice.id)/retire" -Method "Post" -Beta | Out-Null
